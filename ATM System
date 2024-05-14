@@ -1,0 +1,113 @@
+import java.util.Scanner;
+
+public class ATMSystem {
+    private static Scanner scanner = new Scanner(System.in);
+    private static BankAccount account = new BankAccount("John Doe", "12345678", 1000.0);
+
+    public static void main(String[] args) {
+        boolean running = true;
+
+        while (running) {
+            showMainMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1:
+                    checkBalance();
+                    break;
+                case 2:
+                    depositMoney();
+                    break;
+                case 3:
+                    withdrawMoney();
+                    break;
+                case 4:
+                    exit();
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void showMainMenu() {
+        System.out.println("\n--- ATM System ---");
+        System.out.println("1. Check Balance");
+        System.out.println("2. Deposit Money");
+        System.out.println("3. Withdraw Money");
+        System.out.println("4. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    private static void checkBalance() {
+        System.out.println("Your current balance is: $" + account.getBalance());
+    }
+
+    private static void depositMoney() {
+        System.out.print("Enter the amount to deposit: $");
+        double amount = scanner.nextDouble();
+        scanner.nextLine();  // Consume newline
+
+        if (amount > 0) {
+            account.deposit(amount);
+            System.out.println("Deposited $" + amount + ". Your new balance is: $" + account.getBalance());
+        } else {
+            System.out.println("Invalid amount. Please enter a positive number.");
+        }
+    }
+
+    private static void withdrawMoney() {
+        System.out.print("Enter the amount to withdraw: $");
+        double amount = scanner.nextDouble();
+        scanner.nextLine();  // Consume newline
+
+        if (amount > 0 && amount <= account.getBalance()) {
+            account.withdraw(amount);
+            System.out.println("Withdrew $" + amount + ". Your new balance is: $" + account.getBalance());
+        } else if (amount > account.getBalance()) {
+            System.out.println("Insufficient balance. Your current balance is: $" + account.getBalance());
+        } else {
+            System.out.println("Invalid amount. Please enter a positive number.");
+        }
+    }
+
+    private static void exit() {
+        System.out.println("Thank you for using the ATM System. Goodbye!");
+    }
+
+    static class BankAccount {
+        private String accountHolderName;
+        private String accountNumber;
+        private double balance;
+
+        public BankAccount(String accountHolderName, String accountNumber, double initialBalance) {
+            this.accountHolderName = accountHolderName;
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+        }
+
+        public double getBalance() {
+            return balance;
+        }
+
+        public void deposit(double amount) {
+            if (amount > 0) {
+                balance += amount;
+            }
+        }
+
+        public void withdraw(double amount) {
+            if (amount > 0 && amount <= balance) {
+                balance -= amount;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Account Holder: %s, Account Number: %s, Balance: $%.2f",
+                    accountHolderName, accountNumber, balance);
+        }
+    }
+}
